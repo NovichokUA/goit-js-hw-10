@@ -24,23 +24,31 @@ function createPromise(delay) {
 function onCreatePromise(event) {
   event.preventDefault();
   let delay = inputValue.value;
-  createPromise(delay)
-    .then(delay => {
-      iziToast.success({
-        position: 'topRight',
-        title: 'OK',
-        message: `✅ Fulfilled promise in ${delay}ms`,
-      });
-      form.reset();
-    })
-    .catch(delay => {
-      iziToast.error({
-        position: 'topRight',
-        title: 'Error',
-        message: `❌ Rejected promise in ${delay}ms`,
-      });
-      form.reset();
+  if (!delay) {
+    return iziToast.warning({
+      position: 'topCenter',
+      title: 'Warning',
+      message: 'You forgot enter a number',
     });
+  } else {
+    createPromise(delay)
+      .then(delay => {
+        form.reset();
+        iziToast.success({
+          position: 'topRight',
+          title: 'OK',
+          message: `✅ Fulfilled promise in ${delay}ms`,
+        });
+      })
+      .catch(delay => {
+        form.reset();
+        iziToast.error({
+          position: 'topRight',
+          title: 'Error',
+          message: `❌ Rejected promise in ${delay}ms`,
+        });
+      });
 
-  inputValue.value = '';
+    inputValue.value = '';
+  }
 }
