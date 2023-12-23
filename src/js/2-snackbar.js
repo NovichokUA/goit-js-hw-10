@@ -24,13 +24,7 @@ function createPromise(delay) {
 function onCreatePromise(event) {
   event.preventDefault();
   let delay = inputValue.value;
-  if (!delay) {
-    return iziToast.warning({
-      position: 'topCenter',
-      title: 'Warning',
-      message: 'You forgot enter a number',
-    });
-  } else {
+  if (delay && form.elements.state.value) {
     createPromise(delay)
       .then(delay => {
         form.reset();
@@ -50,5 +44,11 @@ function onCreatePromise(event) {
       });
 
     inputValue.value = '';
+  } else {
+    return iziToast.warning({
+      position: 'topCenter',
+      title: 'Warning',
+      message: 'All fields must be completed!',
+    });
   }
 }
