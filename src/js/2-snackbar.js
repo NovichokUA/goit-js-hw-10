@@ -31,6 +31,7 @@ function onCreatePromise(event) {
         title: 'OK',
         message: `✅ Fulfilled promise in ${delay}ms`,
       });
+      form.reset();
     })
     .catch(delay => {
       iziToast.error({
@@ -38,10 +39,8 @@ function onCreatePromise(event) {
         title: 'Error',
         message: `❌ Rejected promise in ${delay}ms`,
       });
+      form.reset();
     });
 
   inputValue.value = '';
-  //   i.forEach(inout => {
-  //     inout.checked = false;
-  //   });
 }
