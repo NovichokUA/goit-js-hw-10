@@ -1,6 +1,9 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
+
 const inputDate = document.querySelector('#datetime-picker');
 const startBtn = document.querySelector('[data-start]');
 let timerDays = document.querySelector('[data-days]');
@@ -18,10 +21,13 @@ const options = {
 
   onClose(selectedDates) {
     startBtn.disabled = false;
-    console.log(selectedDates[0]);
     startBtn.addEventListener('click', startCounter);
     if (selectedDates[0] < Date.now()) {
-      alert('Please choose a date in the future');
+      iziToast.warning({
+        position: 'topCenter',
+        title: 'Warning',
+        message: 'Please choose a date in the future',
+      });
       startBtn.disabled = true;
       return;
     } else if (event.target.nodeName !== 'button') {
@@ -29,36 +35,44 @@ const options = {
     } else {
       startCounter();
     }
-
-    function startCounter(event) {
-      startBtn.disabled = true;
-      inputDate.disabled = true;
-      let intervalId = null;
-
-      intervalId = setInterval(() => {
-        let time = selectedDates[0];
-
-        let currentTime = Date.now();
-
-        let deltaTime = time - currentTime;
-
-        if (deltaTime <= 0) {
-          clearInterval(intervalId);
-          intervalId = null;
-          inputDate.disabled = false;
-          startBtn.disabled = false;
-          return;
-        }
-
-        const { days, hours, minutes, seconds } = convertMs(deltaTime);
-        timerDays.textContent = pad(days);
-        timerHours.textContent = pad(hours);
-        timerMinutes.textContent = pad(minutes);
-        timerSeconds.textContent = pad(seconds);
-      }, 1000);
-    }
   },
 };
+
+export const fp = flatpickr(inputDate, options);
+
+function startCounter(event) {
+  iziToast.success({
+    position: 'topCenter',
+    title: 'OK',
+    message: 'A Good Choice!',
+  });
+
+  startBtn.disabled = true;
+  inputDate.disabled = true;
+  let intervalId = null;
+
+  let userSelectedDate = fp.selectedDates[0];
+
+  intervalId = setInterval(() => {
+    let currentTime = Date.now();
+
+    let deltaTime = userSelectedDate - currentTime;
+
+    if (deltaTime <= 0) {
+      clearInterval(intervalId);
+      intervalId = null;
+      inputDate.disabled = false;
+      startBtn.disabled = false;
+      return;
+    }
+
+    const { days, hours, minutes, seconds } = convertMs(deltaTime);
+    timerDays.textContent = pad(days);
+    timerHours.textContent = pad(hours);
+    timerMinutes.textContent = pad(minutes);
+    timerSeconds.textContent = pad(seconds);
+  }, 1000);
+}
 
 function pad(value) {
   return String(value).padStart(2, '0');
@@ -82,5 +96,3 @@ function convertMs(ms) {
 
   return { days, hours, minutes, seconds };
 }
-
-const fp = flatpickr(inputDate, options);
