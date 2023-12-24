@@ -7,18 +7,10 @@ let inputValue = form.elements.delay;
 
 form.addEventListener('submit', onCreatePromise);
 
-function createPromise(delay) {
+function createPromise(delay, state) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      // form.elements.state.value === 'fulfilled'
-      //   ? resolve(delay)
-      //   : reject(delay);
-
-      if (form.elements.state.value === 'fulfilled') {
-        resolve(delay);
-      } else if (form.elements.state.value === 'rejected') {
-        reject(delay);
-      }
+      state === 'fulfilled' ? resolve(delay) : reject(delay);
     }, delay);
   });
 }
@@ -26,29 +18,25 @@ function createPromise(delay) {
 function onCreatePromise(event) {
   event.preventDefault();
   let delay = inputValue.value;
-  if (delay && form.elements.state.value) {
-    createPromise(delay)
-      .then(delay => {
-        iziToast.success({
-          position: 'topRight',
-          title: 'OK',
-          message: `✅ Fulfilled promise in ${delay}ms`,
-        });
-      })
-      .catch(error => {
-        iziToast.error({
-          position: 'topRight',
-          title: 'Error',
-          message: `❌ Rejected promise in ${error}ms`,
-        });
-      });
 
-    inputValue.value = '';
-  } else {
-    return iziToast.warning({
-      position: 'topCenter',
-      title: 'Warning',
-      message: 'All fields must be completed!',
+  createPromise(delay, form.elements.state.value)
+    .then(delay => {
+      iziToast.success({
+        position: 'topRight',
+        title: 'OK',
+        message: `✅ Fulfilled promise in ${delay}ms`,
+      });
+    })
+    .catch(error => {
+      iziToast.error({
+        position: 'topRight',
+        title: 'Error',
+        message: `❌ Rejected promise in ${error}ms`,
+      });
+    })
+    .finally(() => {
+      form.reset();
     });
-  }
+
+  inputValue.value = '';
 }
