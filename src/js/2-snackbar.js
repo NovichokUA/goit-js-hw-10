@@ -5,13 +5,19 @@ const form = document.querySelector('.form');
 const createPromisBtn = document.querySelector('button');
 let inputValue = form.elements.delay;
 
-let i = document.getElementsByName('state');
+let i = document.querySelector('fieldset');
+console.log(i);
+console.log(i.getElementsByTagName('input'));
 
-createPromisBtn.addEventListener('click', onCreatePromise);
+form.addEventListener('submit', onCreatePromise);
 
 function createPromise(delay) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
+      // form.elements.state.value === 'fulfilled'
+      //   ? resolve(delay)
+      //   : reject(delay);
+
       if (form.elements.state.value === 'fulfilled') {
         resolve(delay);
       } else if (form.elements.state.value === 'rejected') {
@@ -27,19 +33,17 @@ function onCreatePromise(event) {
   if (delay && form.elements.state.value) {
     createPromise(delay)
       .then(delay => {
-        form.reset();
         iziToast.success({
           position: 'topRight',
           title: 'OK',
           message: `✅ Fulfilled promise in ${delay}ms`,
         });
       })
-      .catch(delay => {
-        form.reset();
+      .catch(error => {
         iziToast.error({
           position: 'topRight',
           title: 'Error',
-          message: `❌ Rejected promise in ${delay}ms`,
+          message: `❌ Rejected promise in ${error}ms`,
         });
       });
 
