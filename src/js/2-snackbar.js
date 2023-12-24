@@ -18,8 +18,8 @@ function createPromise(delay, state) {
 function onCreatePromise(event) {
   event.preventDefault();
   let delay = inputValue.value;
-
-  createPromise(delay, form.elements.state.value)
+  let state = form.elements.state.value;
+  createPromise(delay, state)
     .then(delay => {
       iziToast.success({
         position: 'topRight',
