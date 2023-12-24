@@ -5,10 +5,6 @@ const form = document.querySelector('.form');
 const createPromisBtn = document.querySelector('button');
 let inputValue = form.elements.delay;
 
-let i = document.querySelector('fieldset');
-console.log(i);
-console.log(i.getElementsByTagName('input'));
-
 form.addEventListener('submit', onCreatePromise);
 
 function createPromise(delay) {
